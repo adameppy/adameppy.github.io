@@ -88,7 +88,7 @@ void drawButton(){
    
 }
 
-void transition(){
+void doTransition(){
   for(int i=0; i<names.length; i++){
         float x = lerp(1.5*lineX, 9*lineX, i/(float)names.length);
         textAlign(CENTER);
@@ -257,7 +257,7 @@ void draw(){
     }
     mouseHover();
   } else{
-    transition();
+    doTransition();
   }
   
 }

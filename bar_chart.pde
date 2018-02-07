@@ -241,8 +241,8 @@ void draw(){
  
   textSize(15);
   
-  for(int i=0; i<=names.length; i++){
-    float textY = lerp(4*lineY,lineY, i/(float)values.length);
+  for(int i=0; i<=10; i++){
+    float textY = lerp(4*lineY,lineY, i/10);
     textAlign(RIGHT);
     text(Math.round((i/10.0) * (max-min) + min), .9*lineX, textY);
   }

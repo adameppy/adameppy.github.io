@@ -213,7 +213,6 @@ void mouseHover(){
 
 
 void setup(){
-  surface.setResizable(true);
   size(1000,500);
   loadStrings();
 }

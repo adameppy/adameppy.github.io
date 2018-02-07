@@ -13,7 +13,7 @@ float barsize = 100;
 float linesize = 0;
 
 
-void loadStrings(){
+void loadTable(){
   String[] lines = loadStrings(path);
   String[] firstLine = split(lines[0], ",");
   xName = firstLine[0];
@@ -21,7 +21,7 @@ void loadStrings(){
   names = new String[lines.length - 1];
   values = new int[lines.length - 1];
   
-  /*for(int i = 1; i<lines.length; i++){
+  for(int i = 1; i<lines.length; i++){
     String[] row = split(lines[i], ",");
     names[i-1] = row[0];
     int value = (int) parseFloat(row[1]);
@@ -31,7 +31,7 @@ void loadStrings(){
       min = value;
     }
     values[i-1] = value;
-  }*/
+  }
   
 }
 
@@ -214,7 +214,7 @@ void mouseHover(){
 
 void setup(){
   size(1000,500);
-  loadStrings();
+  loadTable();
 }
 
 void draw(){

@@ -218,7 +218,6 @@ void setup(){
 }
 
 void draw(){
-  clear();
   background(255,255,255);
   strokeWeight(7);
   lineX = width/10;

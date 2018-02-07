@@ -8,7 +8,7 @@ int min = 0;
 float lineX;
 float lineY;
 boolean bar = true;
-boolean transition = false;
+boolean transitioning = false;
 float barsize = 100;
 float linesize = 0;
 
@@ -81,8 +81,8 @@ void drawButton(){
    textAlign(CENTER,CENTER);
    text("Transform", 8.5*lineX, .55*lineY);
    
-   if(!transition && mousePressed && mouseX > 8*lineX && mouseX<9*lineX && mouseY>.3*lineY && mouseY<.8*lineY){
-     transition = true;
+   if(!transitioning && mousePressed && mouseX > 8*lineX && mouseX<9*lineX && mouseY>.3*lineY && mouseY<.8*lineY){
+     transitioning = true;
      bar = !bar;
    }
    
@@ -132,7 +132,7 @@ void transition(){
         }
       }
     } else{
-      transition = false;
+      transitioning = false;
       drawLines();
     }
   }else{
@@ -170,7 +170,7 @@ void transition(){
         rect(x-lineX/10, y, x+lineX/10, bottom);
       }
     } else{
-      transition = false;
+      transitioning = false;
       drawBars();
     }
   }
@@ -249,7 +249,7 @@ void draw(){
   }
   
   drawButton();
-  if (!transition){
+  if (!transitioning){
     if(bar){
       drawBars();
     }else{

@@ -42,8 +42,10 @@ void loadString() {
   axis = new boolean[numColumns];
   lineX = new float[numColumns];
 
-  java.util.Arrays.fill(min, Float.POSITIVE_INFINITY);
-  java.util.Arrays.fill(max, Float.NEGATIVE_INFINITY);
+  for(int i = 0; i<numColumns; i++){
+	min[i] = 10000000000;
+	max[i] = -10000000000;
+  }
 
   for (int i = 1; i<=numEntries; i++) {
     String[] row = split(lines[i], ",");

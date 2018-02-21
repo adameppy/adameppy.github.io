@@ -210,7 +210,7 @@ void draw() {
   background(255, 255, 255);
   drawLines();
   drawAxis();
-  //drawBox();
+  drawBox();
   
  
   lastPress++;

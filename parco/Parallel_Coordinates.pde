@@ -30,7 +30,9 @@ void loadString() {
   String[] lines = loadStrings(path);
   String[] firstline = split(lines[0], ",");
   labels = new String[firstline.length-1];
-  System.arraycopy(firstline, 1, labels, 0, firstline.length-1);
+  for (int i = 1; i<firstline.length; i++){
+	labels[i-1] = firstline[i];
+  }
   numColumns = labels.length;
   numEntries = lines.length-1;
   names = new String[numEntries];

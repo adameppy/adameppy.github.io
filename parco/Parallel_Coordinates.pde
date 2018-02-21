@@ -1,4 +1,4 @@
-String path = "data.csv";
+String path = "parco/data.csv";
 String[] labels;
 String[] names;
 float[][] values;
@@ -197,7 +197,6 @@ void drawBox(){
 
 
 void setup() {
-  surface.setResizable(true);
   size(1000, 500);
   loadString();
 }

@@ -23,7 +23,7 @@ float endy;
 
 boolean dragging;
 
-ArrayList<Integer> hoverList = new ArrayList<Integer>();
+//ArrayList<Integer> hoverList = new ArrayList<Integer>();
 
 
 void loadString() {
@@ -132,7 +132,7 @@ void drawLines() {
 
       if (MouseInsideLine(xFrom, yFrom, xTo, yTo, .6) && !highlighted) {
         highlighted = true;
-        hoverList.add(new Integer(i));
+        //hoverList.add(i);
         j = -1;
       }
       
@@ -206,11 +206,11 @@ void setup() {
 }
 
 void draw() {
-  hoverList.clear();
+  //hoverList.clear();
   background(255, 255, 255);
   drawLines();
   drawAxis();
-  drawBox();
+  //drawBox();
   
  
   lastPress++;

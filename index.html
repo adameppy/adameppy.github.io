@@ -114,12 +114,13 @@ function updateMap(){
 				coordinates = d3.mouse(this);
 				var mouseX = d3.event.clientX;
 				var mouseY = d3.event.clientY;
-				div.transition()
-					.duration(200)
-					.style("opacity", .9);
+
 				for(var i in data){
 	        d = data[i];
 	        if (d.ab == s.ab){
+						div.transition()
+							.duration(200)
+							.style("opacity", .9);
 						div .html("<h2>"+d.state+"</h2>" + d.eVotes +
 						 " Electoral Votes <br /> <dem>" + d.dName + ": " + d.dVotes +
 						 " votes (" + d.dPer + "%) </dem> </br> <rep>" + d.rName + ": " + d.rVotes +
@@ -154,12 +155,12 @@ function updateMap(){
 				coordinates = d3.mouse(this);
 				var mouseX = d3.event.clientX;
 				var mouseY = d3.event.clientY;
-				div.transition()
-					.duration(200)
-					.style("opacity", .9);
 				for(var i in data){
 	        d = data[i];
 	        if (d.ab == "DC"){
+						div.transition()
+							.duration(200)
+							.style("opacity", .9);
 						div .html("<h2>"+d.state+"</h2>" + d.eVotes +
 						 " Electoral Votes <br /> <dem>" + d.dName + ": " + d.dVotes +
 						 " votes (" + d.dPer + "%) </dem> </br> <rep>" + d.rName + ": " + d.rVotes +

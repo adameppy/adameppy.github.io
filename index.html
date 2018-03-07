@@ -9,9 +9,403 @@
    <h1>Bar/Line Chart</h1>
    <p>This is assignment 2 for my visualization class.</p>
    <canvas data-processing-sources="bars/bar_chart.pde"></canvas>
-   
+
    <h1>Parallel Coordinates</h1>
    <p>This is assignment 3 for my visualization class.</p>
    <canvas data-processing-sources="parco/Parallel_Coordinates.pde"></canvas>
+
+	 <h1>Electoral Map</h1>
+	 <p>This is assignment 4, made with d3.js</p>
 </body>
+<style>
+
+.states :hover {
+	fill-opacity: .7;
+}
+
+#map rect:hover{
+	opacity: .7;
+}
+
+/* This was prewritten from: https://bl.ocks.org/mbostock/4090848*/
+.state-borders {
+  fill: none;
+  stroke: white;
+  stroke-width: 0.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.label {
+	font-weight: bold;
+  text-anchor: middle;
+  cursor: default;
+}
+
+#map .label {
+  font-weight: bold;
+  text-anchor: middle;
+  cursor: default;
+	paint-order: stroke;
+	stroke-width: 1px;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: white;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+dem {
+	color: blue;
+}
+
+rep {
+	color: red;
+}
+
+</style>
+<svg id="timeline" width="960" height="70"></svg>
+<svg id="map" width="960" height="600"></svg>
+<svg id="legend" width="960" height="100"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script>
+
+function updateMap(){
+	  d3.csv("data/election-results-"+year+".csv", function(d) {
+	    return {
+	      state : d.State,
+				ab : d.Abbreviation,
+	      eVotes : +d.Total_EV,
+	      dPer : +d.D_Percentage,
+				dVotes : d.D_Votes,
+				dName : d.D_Nominee,
+	      rPer : +d.R_Percentage,
+				rVotes : d.R_Votes,
+				rName : d.R_Nominee
+	    }
+	  }, function(data){
+	    state.attr("fill", function(s){
+	      for(var i in data){
+	        d = data[i];
+	        if (d.ab == s.ab){
+						if(d.ab == "DC"){
+							dc.attr("fill", function(){
+								return colorScale(d.rPer-d.dPer)
+							})
+						}
+	         return colorScale(d.rPer-d.dPer)
+	        }
+	      }
+				if (s.ab == "DC"){
+					dc.attr("fill", "");
+				}
+	    }).on("mouseover", function(s){
+				var coordinates = [0,0];
+				coordinates = d3.mouse(this);
+				var mouseX = coordinates[0];
+				var mouseY = coordinates[1];
+				div.transition()
+					.duration(200)
+					.style("opacity", .9);
+				for(var i in data){
+	        d = data[i];
+	        if (d.ab == s.ab){
+						div .html("<h2>"+d.state+"</h2>" + d.eVotes +
+						 " Electoral Votes <br /> <dem>" + d.dName + ": " + d.dVotes +
+						 " votes (" + d.dPer + "%) </dem> </br> <rep>" + d.rName + ": " + d.rVotes +
+						 " votes (" + d.rPer + "%) </rep>")
+							.style("left", (mouseX-80) + "px")
+							.style("top", (mouseY - 30) + "px");
+					}
+				}
+			})
+			.on("mouseout", function(f){
+				div.transition()
+					.duration(500)
+					.style("opacity", 0);
+			});
+
+			label.text(function(s) {
+        var noL = ["DE", "ML", "VT", "NH", "CT", "MA", "NH", "RI", "MD"];
+        if( noL.includes(s.ab)){
+          return;
+        }
+				for(var i in data){
+	        d = data[i];
+	        if (d.ab == s.ab){
+	          return s.ab + " " + d.eVotes;
+	        }
+	      }
+
+      } );
+
+			dc.on("mouseover", function(s){
+				var coordinates = [0,0];
+				coordinates = d3.mouse(this);
+				var mouseX = coordinates[0];
+				var mouseY = coordinates[1];
+				div.transition()
+					.duration(200)
+					.style("opacity", .9);
+				for(var i in data){
+	        d = data[i];
+	        if (d.ab == "DC"){
+						div .html("<h2>"+d.state+"</h2>" + d.eVotes +
+						 " Electoral Votes <br /> <dem>" + d.dName + ": " + d.dVotes +
+						 " votes (" + d.dPer + "%) </dem> </br> <rep>" + d.rName + ": " + d.rVotes +
+						 " votes (" + d.rPer + "%) </rep>")
+							.style("left", (mouseX-80) + "px")
+							.style("top", (mouseY - 30) + "px");
+					}
+				}
+			})
+			.on("mouseout", function(f){
+				div.transition()
+					.duration(500)
+					.style("opacity", 0);
+			});
+
+	  });
+}
+
+var svg = d3.select("#map"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+var path = d3.geoPath();
+
+var stateIds;
+var state;
+var label;
+var dc;
+var year = 2016;
+
+var colorScale = d3.scaleThreshold().domain([-15, -10, -5, 0, 5, 10, 15])
+	.range(["#023373", "#177FBF", "#66D8F2", "#99F2F8", "#FF9CD8", "#FF6E87", "#FF4047", "#FF1000"]);
+
+d3.csv("data/stateIds.csv", function(d) {
+  return {
+    id : +d.id,
+    stAb : d.StAb,
+    stName : d.StName
+  }
+}, function(data){
+  stateIds = data;
+});
+
+/* States JSON feature extraction prewritten at https://bl.ocks.org/mbostock/4090848 */
+
+d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
+  if (error) throw error;
+  features = topojson.feature(us, us.objects.states).features;
+
+  for(var feature in features){
+    for(var st in stateIds){
+      if(parseInt(features[feature].id) == stateIds[st].id){
+        features[feature].name = stateIds[st].stName;
+        features[feature].ab = stateIds[st].stAb;
+        break;
+      }
+    }
+  }
+
+  state = svg.append("g")
+      .attr("class", "states")
+    .selectAll("path")
+    .data(features)
+    .enter().append("path")
+      .attr("d", path);
+
+
+  svg.append("path")
+      .attr("class", "state-borders")
+      .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
+
+  label = svg.selectAll("text")
+    .data(features)
+    .enter()
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", function(d) {
+        var t = path.centroid(d);
+        var x = t[0];
+        var y = t[1];
+        if (d.ab == "HI"){
+          x -= 30;
+        } else if (d.ab == "FL") {
+          x += 15;
+        }else if (d.ab == "MI") {
+          x += 15;
+          y += 30;
+        }else if (d.ab == "DC") {
+          x += 80;
+          y += 15;
+        } else if (d.ab == "LA") {
+          x -= 10;
+        } else if (d.ab == "NJ") {
+					x += 32;
+				} else if (d.ab == "NY") {
+					x += 7;
+				}
+        return "translate(" + x + "," + y + ")";
+      })
+      .text(function(d) {
+        var noL = ["DE", "ML", "VT", "NH", "CT", "MA", "NH", "RI", "MD"];
+        if( noL.includes(d.ab)){
+          return;
+        }
+        return d.ab;
+      } )
+      .attr("fill", function(d){
+        if (d.ab == "DC" || d.ab == "HI" || d.ab == "NJ"){
+          return "black";
+        }
+        return "white";
+      }).style("stroke", function(d){
+			  if (d.ab == "DC" || d.ab == "HI" || d.ab == "NJ"){
+          return;
+        }
+        return "black";
+			});
+
+	dc = svg.append("rect").attr("id", "dc")
+		.attr("width", 20).attr("height", 20)
+		.attr("x", 885).attr("y", 280);
+
+
+  updateMap();
+});
+
+d3.csv("data/yearwise-winner.csv", function(d) {
+  return {
+    year : +d.YEAR,
+    party : d.PARTY,
+  }
+}, function(data){
+
+	var timeline = d3.select("#timeline"),
+	    theight = +timeline.attr("height");
+
+	var xScale = d3.scaleLinear().domain([1940,2016]).range([60,900]);
+
+  var circles = timeline.selectAll("circle")
+		.data(data)
+		.enter()
+		.append("circle")
+		.attr("cx", function(d) {
+			return xScale(d.year);
+		})
+		.attr("cy", function(d) {
+			return 15;
+		})
+		.attr("r", 10)
+		.style("fill", function(d) {
+			if (d.party == "D"){
+				return "blue";
+			} else {
+				return "red";
+			}
+		})
+		.style("stroke", "black")
+		.style("stroke-width", function(d) {
+			if (d.year == year){
+				return 3;
+			}else{
+				return 0;
+			}
+		})
+		.on("click", function(c){
+			year = c.year;
+			circles.style("stroke-width", function(d) {
+				if (d.year == year){
+					return 5;
+				}else{
+					return 0;
+				}
+			});
+			updateMap();
+		});
+
+	  var label = timeline.selectAll("text")
+	    .data(data)
+	    .enter()
+	    .append("text")
+	      .attr("class", "label")
+	      .attr("transform", function(d) {
+	        var x = xScale(d.year);
+	        var y = 50;
+	        return "translate(" + x + "," + y + ")";
+	      })
+	      .attr("fill", "black")
+				.text(function(d){
+					return d.year;
+				});
+
+});
+
+var legend = d3.select("#legend");
+var legScale = d3.scaleLinear().domain([1,8]).range([160,720]);
+var legdata = [[20,1],[12,2],[8,3],[2,4],[-2,5],[-7,6],[-12,7],[-20,8]];
+
+var rects = legend.selectAll("rect")
+	.data(legdata)
+	.enter()
+	.append("rect")
+	.attr("x", function(d) {
+		return legScale(d[1]);
+	}).attr("y", 5).attr("width", 560/7).attr("height", 30)
+	.attr("fill", function(d){
+		return colorScale(d[0]);
+	});
+
+legend.selectAll("text")
+	.data(legdata)
+	.enter()
+	.append("text")
+		.attr("class", "leglab")
+		.attr("transform", function(d) {
+			var x = legScale(d[1]) + 560/14;
+			var y = 50;
+			return "translate(" + x + "," + y + ")";
+		})
+		.attr("fill", "black")
+		.text(function(d){
+			if (d[0] <= -15){
+				return "less than -15%";
+			} else if (d[0] <= -10) {
+				return "-10% to -15%";
+			} else if (d[0] <= -5) {
+				return "-5% to -10%";
+			} else if (d[0] <= 0) {
+				return "-5% to -0%";
+			} else if (d[0] <= 5) {
+				return "0% to 5%";
+			} else if (d[0] <= 10) {
+				return "5% to 10%";
+			} else if (d[0] <= 15) {
+				return "10% to 15%";
+			} else {
+				return "greater than 15%";
+			}
+		})
+		.attr("font-size", "8pt")
+		.attr("text-anchor", "middle");
+
+
+</script>
+
 </html>

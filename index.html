@@ -81,7 +81,7 @@ rep {
 <script>
 
 function updateMap(){
-	  d3.csv("data/election-results-"+year+".csv", function(d) {
+	  d3.csv("electoral/election-results-"+year+".csv", function(d) {
 	    return {
 	      state : d.State,
 				ab : d.Abbreviation,
@@ -197,7 +197,7 @@ var year = 2016;
 var colorScale = d3.scaleThreshold().domain([-15, -10, -5, 0, 5, 10, 15])
 	.range(["#023373", "#177FBF", "#66D8F2", "#99F2F8", "#FF9CD8", "#FF6E87", "#FF4047", "#FF1000"]);
 
-d3.csv("data/stateIds.csv", function(d) {
+d3.csv("electoral/stateIds.csv", function(d) {
   return {
     id : +d.id,
     stAb : d.StAb,
@@ -290,7 +290,7 @@ d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
   updateMap();
 });
 
-d3.csv("data/yearwise-winner.csv", function(d) {
+d3.csv("electoral/yearwise-winner.csv", function(d) {
   return {
     year : +d.YEAR,
     party : d.PARTY,

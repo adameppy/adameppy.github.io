@@ -112,8 +112,8 @@ function updateMap(){
 	    }).on("mouseover", function(s){
 				var coordinates = [0,0];
 				coordinates = d3.mouse(this);
-				var mouseX = d3.event.pageX - document.getElementById("map").getBoundingClientRect().x + 10;
-				var mouseY = d3.event.pageY - document.getElementById("map").getBoundingClientRect().y - 10;
+				var mouseX = d3.event.clientX;
+				var mouseY = d3.event.clientY;
 				div.transition()
 					.duration(200)
 					.style("opacity", .9);
@@ -152,8 +152,8 @@ function updateMap(){
 			dc.on("mouseover", function(s){
 				var coordinates = [0,0];
 				coordinates = d3.mouse(this);
-				var mouseX = d3.event.pageX - document.getElementById("map").getBoundingClientRect().x + 10;
-				var mouseY = d3.event.pageY - document.getElementById("map").getBoundingClientRect().y - 10;
+				var mouseX = d3.event.clientX;
+				var mouseY = d3.event.clientY;
 				div.transition()
 					.duration(200)
 					.style("opacity", .9);
